@@ -1,102 +1,110 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
-import myImg from "../../Assets/avatar-home.png";
-import Tilt from "react-parallax-tilt";
-import {
-  AiFillGithub,
-  AiOutlineTwitter,
-  AiFillInstagram,
-  AiOutlineMail,
-} from "react-icons/ai";
+import { AiFillGithub, AiOutlineMail } from "react-icons/ai";
 import { FaLinkedinIn } from "react-icons/fa";
+import { useT } from "../../i18n";
+
+// Keys only — the copy itself lives in src/i18n/ui.js so all three languages
+// stay side by side.
+const FACT_KEYS = [
+  ["home2.factExperience", "home2.factExperienceValue"],
+  ["home2.factBased", "home2.factBasedValue"],
+  ["home2.factStack", "home2.factStackValue"],
+  ["home2.factAlso", "home2.factAlsoValue"],
+];
 
 function Home2() {
-  return (
-    <Container fluid className="home-about-section" id="about">
-      <Container>
-        <Row>
-          <Col md={8} className="home-about-description">
-            <h1 style={{ fontSize: "2.6em" }}>
-              LET ME <span className="purple"> INTRODUCE </span> MYSELF
-            </h1>
-            <p className="home-about-body">
-  I fell in love with programming and, honestly, I’m always learning something new every day. 🤷‍♂️
-  <br />
-  <br />
-  I’m fluent in{" "}
-  <i>
-    <b className="purple">JavaScript, TypeScript, React.js, and Next.js</b>
-  </i>{" "}
-  — the core tools that power modern web experiences.
-  <br />
-  <br />
-  My passion lies in building sleek, scalable, and user-centric front-end applications. I enjoy crafting seamless interfaces and engaging digital products that users love.
-  <br />
-  <br />
-  When I’m not working on web projects, I’m diving into new web technologies and exploring the latest trends in front-end development. I also enjoy working with{" "}
-  <i>
-    <b className="purple">React Native</b>
-  </i>{" "}
-  for mobile apps and sometimes dive into backend development with{" "}
-  <i>
-    <b className="purple">Node.js</b>
-  </i>{" "}
-  to build full-stack solutions.
-</p>
+  const t = useT();
 
-          </Col>
-          <Col md={4} className="myAvtar">
-            <Tilt>
-              <img src={myImg} className="img-fluid" alt="avatar" />
-            </Tilt>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={12} className="home-about-social">
-            <h1>FIND ME ON</h1>
-            <p>
-              Feel free to <span className="purple">connect </span>with me
-            </p>
-            <ul className="home-about-social-links">
-              <li className="social-icons">
+  return (
+    <>
+      <section className="rd-section rd-section--alt" id="about">
+        <div className="rd-container">
+          <div className="rd-hero" style={{ padding: 0 }}>
+            <div>
+              <p className="rd-eyebrow">{t("home2.eyebrow")}</p>
+              <h2 className="rd-title">{t("home2.title")}</h2>
+
+              <p className="rd-sub">
+                {t("home2.p1a")}
+                <span className="purple">{t("home2.p1b")}</span>
+                {t("home2.p1c")}
+              </p>
+
+              <p className="rd-sub">
+                {t("home2.p2a")}
+                <span className="purple">{t("home2.p2b")}</span>
+                {t("home2.p2c")}
+                <span className="purple">{t("home2.p2d")}</span>
+                {t("home2.p2e")}
+              </p>
+            </div>
+
+            <div className="rd-hero__art">
+              <dl className="rd-facts">
+                {FACT_KEYS.map(([labelKey, valueKey]) => (
+                  <div className="rd-facts__row" key={labelKey}>
+                    <dt>{t(labelKey)}</dt>
+                    <dd>{t(valueKey)}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="rd-section">
+        <div className="rd-container">
+          <div className="rd-cta">
+            <h2 className="rd-title">{t("home2.ctaTitle")}</h2>
+            <p className="rd-sub">{t("home2.ctaSub")}</p>
+
+            <a
+              className="rd-btn rd-btn--solid rd-cta__btn"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=meriammhadhbi916@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <AiOutlineMail /> {t("home2.ctaButton")}
+            </a>
+
+            <ul className="rd-socials rd-cta__socials">
+              <li>
                 <a
                   href="https://github.com/meriammmmmm"
                   target="_blank"
                   rel="noreferrer"
-                  className="icon-colour  home-social-icons"
+                  aria-label="GitHub"
                 >
                   <AiFillGithub />
                 </a>
               </li>
-           
-              <li className="social-icons">
+              <li>
                 <a
                   href="https://www.linkedin.com/in/meriam-mhadhbi-563bb9285/"
                   target="_blank"
                   rel="noreferrer"
-                  className="icon-colour  home-social-icons"
+                  aria-label="LinkedIn"
                 >
                   <FaLinkedinIn />
                 </a>
               </li>
-              <li className="social-icons">
-              <a
-  href="https://mail.google.com/mail/?view=cm&fs=1&to=meriammhadhbi916@gmail.com"
-  style={{ color: "white" }}
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Email"
-                className="icon-colour  home-social-icons"
-
-              >
-                <AiOutlineMail />
-              </a>
-            </li>
-          </ul>
-          </Col>
-        </Row>
-      </Container>
-    </Container>
+              <li>
+                <a
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=meriammhadhbi916@gmail.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Email"
+                >
+                  <AiOutlineMail />
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
+
 export default Home2;

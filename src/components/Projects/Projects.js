@@ -1,108 +1,80 @@
-import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import React, { useMemo, useState } from "react";
 import ProjectCard from "./ProjectCards";
 import Particle from "../Particle";
-import annodoc from "../../Assets/Projects/annodoc.png";
-import imtiyaz from "../../Assets/Projects/imtiyaz.png";
-import StarbBussnies from "../../Assets/Projects/star-bussnies.png";
-import recruitment from "../../Assets/Projects/recruitment.png";
-import osthedhy from "../../Assets/Projects/osthedhy.png";
-import SoftyDinner from "../../Assets/Projects/SoftyDinner.png";
-import quiz from "../../Assets/Projects/quiz.png";
-import softySkills from "../../Assets/Projects/softySkills.png";
+import { useProjects, useT } from "../../i18n";
+
+const ALL = "All";
 
 function Projects() {
+  const t = useT();
+  const projects = useProjects();
+  const [active, setActive] = useState(ALL);
+
+  // Client work vs. self-directed work. Derived from the data so a new type
+  // creates its own tab. The VALUE stays English — it is the filter key — and
+  // only the label is translated.
+  const categories = useMemo(
+    () => [ALL, ...Array.from(new Set(projects.map((p) => p.type)))],
+    [projects]
+  );
+
+  const visible = useMemo(
+    () => (active === ALL ? projects : projects.filter((p) => p.type === active)),
+    [active, projects]
+  );
+
+  const countFor = (cat) =>
+    cat === ALL ? projects.length : projects.filter((p) => p.type === cat).length;
+
+  const labelFor = (cat) =>
+    cat === ALL ? t("projects.all") : t(`type.${cat}`);
+
   return (
-    <Container fluid className="project-section">
+    <div className="project-section">
       <Particle />
-      <Container>
-        <h1 className="project-heading">
-          My Recent <strong className="purple">Works </strong>
-        </h1>
-        <p style={{ color: "white" }}>
-          Here are a few projects I've worked on recently.
-        </p>
-        <Row style={{ justifyContent: "center", paddingBottom: "10px" }}>
-          <Col md={4} className="project-card">
-            <ProjectCard
-              imgPath={recruitment}
-              isBlog={false}
-              title="RH Recruitment"
-              description=" RH Recruitment is a comprehensive recruitment platform that enables companies to post jobs and internships while allowing candidates to submit their applications"
-              demoLink="https://recruitment.softylines.com/"
-            />
-          </Col>
 
-          <Col md={4} className="project-card">
-            <ProjectCard
-              imgPath={SoftyDinner}
-              isBlog={false}
-              title="SoftyDinner"
-              description="SoftyDinner is a digital solution designed to simplify food reservations in a corporate environment. It connects employees, allowing them to reserve meals in advance, reduce waiting times, and minimize food waste."
-              demoLink="https://softydinner.softylines.com/dashboard/user/users"
-            />
-          </Col>
-          <Col md={4} className="project-card">
-            <ProjectCard
-              imgPath={annodoc}
-              isBlog={false}
-              title="Annodoc"
-              description="Annodoc is a modern PDF platform designed to transform the way individuals and teams work with documents. It goes beyond traditional PDF editors by enabling real-time collaboration, intuitive annotation tools, and simple sharing — all in one seamless solution."
-              demoLink="https://annodoc.com/"
-            />
-          </Col>
-          <Col md={4} className="project-card">
-            <ProjectCard
-              imgPath={StarbBussnies}
-              isBlog={false}
-              title="Star Business"
-              description="Star Business is a consultancy service specializing in guiding entrepreneurs, startups, and corporations through the process of establishing and managing businesses in the United Arab Emirates. With expert knowledge of local regulations, Star Business makes company setup simple, fast, and compliant, while offering long-term support in business operations."
-              demoLink="https://star-business.net/en"
-            />
-          </Col>
+      <div className="rd-container">
+        <div style={{ textAlign: "center", paddingTop: 40 }}>
+          <p className="rd-eyebrow">{t("projects.eyebrow")}</p>
+          <h1 className="rd-title">
+            {t("projects.titleA")}
+            <span className="purple">{t("projects.titleB")}</span>
+          </h1>
+          <p className="rd-sub">{t("projects.sub")}</p>
+        </div>
 
-       
+        <div className="rd-tabs" role="tablist" aria-label={t("projects.filterLabel")}>
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              role="tab"
+              aria-selected={active === cat}
+              className={`rd-tab${active === cat ? " is-active" : ""}`}
+              onClick={() => setActive(cat)}
+            >
+              {labelFor(cat)}
+              <span className="rd-tab__count">{countFor(cat)}</span>
+            </button>
+          ))}
+        </div>
 
-          <Col md={4} className="project-card">
+        <div className="rd-grid">
+          {visible.map((p) => (
             <ProjectCard
-              imgPath={osthedhy}
-              isBlog={false}
-              title="Ostedhy"
-              description="Ostedhy is an online educational platform that offers interactive live lessons and classes in various subjects for all levels  from the seventh grade up to the preparatory stage for engineering studies and the French baccalaureate. These lessons are delivered by a group of highly qualified and experienced teachers."
-              demoLink="https://ostedhy.com/"
+              key={p.slug}
+              slug={p.slug}
+              imgPath={p.img}
+              title={p.title}
+              description={p.summary}
+              tags={p.tags}
+              demoLink={p.demoLink}
+              linkLabel={p.linkLabel}
             />
-          </Col>
-
-          <Col md={4} className="project-card">
-            <ProjectCard
-              imgPath={imtiyaz}
-              isBlog={false}
-              title="Face Recognition and Emotion Detection"
-              description="Imtiyazacademy is a Mauritanian digital platform offering national curricula online through modern technology. It provides high-quality education with detailed lessons, interactive exercises, and regular assessments, guided by experienced teachers in a flexible and secure learning environment."
-              demoLink="https://imtiyazacademy.com/"
-            />
-          </Col>
-          <Col md={4} className="project-card">
-            <ProjectCard
-              imgPath={quiz}
-              isBlog={false}
-              title="We Quizz"
-              description="Innovative Teaching, Seamless Quizzes .We Quizz makes it easy for educators to craft quizzes that captivate students and promote deep understanding"
-              demoLink="https://wequizz.com/"
-            />
-          </Col>
-          <Col md={4} className="project-card">
-            <ProjectCard
-              imgPath={softySkills}
-              isBlog={false}
-              title="Softy Skills"
-              description="Softy Skills provides practical web development training with an emphasis on hands-on experience.The courses are designed to give students a deep understanding of concepts while developing the skills necessary to thrive in today's job market."
-              demoLink="https://softyskills.com/"
-            />
-          </Col>
-        </Row>
-      </Container>
-    </Container>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 

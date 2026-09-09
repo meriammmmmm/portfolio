@@ -1,28 +1,33 @@
 import React from "react";
-import { Col, Row } from "react-bootstrap";
 import {
-  SiVisualstudiocode,
-  SiPostman,
-  SiSlack,
-  SiVercel,
-  SiMacos,
+  SiGit,
+  SiGithub,
+  SiDocker,
+  SiStrapi,
+  SiSocketdotio,
+  SiReact,
 } from "react-icons/si";
+
+// "Backend Tools" from the CV, plus React Native which it lists under Frontend.
+const TOOLS = [
+  { icon: <SiGit />, label: "Git" },
+  { icon: <SiGithub />, label: "GitHub" },
+  { icon: <SiDocker />, label: "Docker" },
+  { icon: <SiStrapi />, label: "Strapi" },
+  { icon: <SiSocketdotio />, label: "WebSocket" },
+  { icon: <SiReact />, label: "React Native" },
+];
 
 function Toolstack() {
   return (
-    <Row style={{ justifyContent: "center", paddingBottom: "50px" }}>
-      <Col xs={4} md={2} className="tech-icons">
-        <SiMacos />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <SiVisualstudiocode />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <SiPostman />
-      </Col>
-    
-     
-    </Row>
+    <ul className="rd-tiles">
+      {TOOLS.map(({ icon, label }) => (
+        <li className="rd-tile" key={label}>
+          {icon}
+          <span>{label}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 

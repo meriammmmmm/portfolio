@@ -1,63 +1,72 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
-import {
-  AiFillGithub,
-  AiOutlineTwitter,
-  AiFillInstagram,
-  AiOutlineMail
-
-} from "react-icons/ai";
+import { Link } from "react-router-dom";
+import { AiFillGithub, AiOutlineMail } from "react-icons/ai";
 import { FaLinkedinIn } from "react-icons/fa";
-import { MdOutlineEmail } from "react-icons/md";
+import { useT } from "../i18n";
+
+const LINKS = [
+  { to: "/", key: "nav.home" },
+  { to: "/about", key: "nav.about" },
+  { to: "/project", key: "nav.projects" },
+  { to: "/resume", key: "nav.resume" },
+];
 
 function Footer() {
-  let date = new Date();
-  let year = date.getFullYear();
-  return (
-    <Container fluid className="footer">
-      <Row>
-        <Col md="4" className="footer-copywright">
-        </Col>
-       
-        <Col md="4" className="footer-body">
-          <ul className="footer-icons">
-            <li className="social-icons">
-              <a
-                href="https://github.com/meriammmmmm"
-                style={{ color: "white" }}
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
-                <AiFillGithub />
-              </a>
-            </li>
-           
-            <li className="social-icons">
-              <a
-                href="https://www.linkedin.com/in/meriam-mhadhbi-563bb9285/"
-                style={{ color: "white" }}
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
-                <FaLinkedinIn />
-              </a>
+  const t = useT();
+  const year = new Date().getFullYear();
 
+  return (
+    <footer className="rd-footer">
+      <div className="rd-container rd-footer__inner">
+        <div className="rd-footer__brand">
+          <strong>{t("brand.name")}</strong>
+          <span>
+            {t("footer.tagline")} {year}
+          </span>
+        </div>
+
+        <ul className="rd-footer__links">
+          {LINKS.map(({ to, key }) => (
+            <li key={key}>
+              <Link to={to}>{t(key)}</Link>
             </li>
-            <li className="social-icons">
-              <a
-  href="https://mail.google.com/mail/?view=cm&fs=1&to=meriammhadhbi916@gmail.com"
-  style={{ color: "white" }}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-<MdOutlineEmail />
-              </a>
-            </li>
-           
-          </ul>
-        </Col>
-      </Row>
-    </Container>
+          ))}
+        </ul>
+
+        <ul className="rd-socials">
+          <li>
+            <a
+              href="https://github.com/meriammmmmm"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+            >
+              <AiFillGithub />
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.linkedin.com/in/meriam-mhadhbi-563bb9285/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+            >
+              <FaLinkedinIn />
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=meriammhadhbi916@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Email"
+            >
+              <AiOutlineMail />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </footer>
   );
 }
 

@@ -1,54 +1,42 @@
 import React from "react";
-import { Col, Row } from "react-bootstrap";
-import { CgCPlusPlus } from "react-icons/cg";
 import {
-  DiJavascript1,
-  DiReact,
-  DiNodejs,
-  DiMongodb,
-  DiPython,
-  DiGit,
-  DiJava,
-} from "react-icons/di";
-import {
-  SiRedis,
-  SiFirebase,
+  SiJavascript,
+  SiTypescript,
+  SiReact,
   SiNextdotjs,
-  SiSolidity,
-  SiPostgresql,
+  SiRedux,
+  SiTailwindcss,
+  SiSass,
+  SiMui,
+  SiNodedotjs,
+  SiPython,
 } from "react-icons/si";
-import { TbBrandGolang } from "react-icons/tb";
+
+// Mirrors the Technologies section of the CV — nothing here that the CV
+// doesn't back up.
+const STACK = [
+  { icon: <SiJavascript />, label: "JavaScript" },
+  { icon: <SiTypescript />, label: "TypeScript" },
+  { icon: <SiReact />, label: "React.js" },
+  { icon: <SiNextdotjs />, label: "Next.js" },
+  { icon: <SiRedux />, label: "Redux" },
+  { icon: <SiTailwindcss />, label: "Tailwind CSS" },
+  { icon: <SiMui />, label: "MUI" },
+  { icon: <SiSass />, label: "Sass" },
+  { icon: <SiNodedotjs />, label: "Node.js" },
+  { icon: <SiPython />, label: "Python" },
+];
 
 function Techstack() {
   return (
-    <Row style={{ justifyContent: "center", paddingBottom: "50px" }}>
-      
-      <Col xs={4} md={2} className="tech-icons">
-        <DiJavascript1 />
-      </Col>
-     
-      <Col xs={4} md={2} className="tech-icons">
-        <DiNodejs />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <DiReact />
-      </Col>
-     
-      <Col xs={4} md={2} className="tech-icons">
-        <DiMongodb />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <SiNextdotjs />
-      </Col>
-     
-      <Col xs={4} md={2} className="tech-icons">
-        <SiFirebase />
-      </Col>
-    
-     
-     
-      
-    </Row>
+    <ul className="rd-tiles">
+      {STACK.map(({ icon, label }) => (
+        <li className="rd-tile" key={label}>
+          {icon}
+          <span>{label}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 

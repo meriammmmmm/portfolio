@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Home from "./components/Home/Home";
 import About from "./components/About/About";
 import Projects from "./components/Projects/Projects";
+import ProjectDetail from "./components/Projects/ProjectDetail";
 import Footer from "./components/Footer";
 import Resume from "./components/Resume/ResumeNew";
 import {
@@ -13,9 +14,13 @@ import {
   Navigate
 } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
-import "./style.css";
-import "./App.css";
+import { LanguageProvider } from "./i18n";
+// Bootstrap MUST come first: it ships a `body { color: var(--bs-body-color) }`
+// reboot rule that otherwise overrides our theme tokens and leaves dark-mode
+// text stuck on Bootstrap's near-black.
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import "./style.css";
 
 function App() {
   const [load, upadateLoad] = useState(true);
@@ -29,7 +34,8 @@ function App() {
   }, []);
 
   return (
-    <Router>
+    <LanguageProvider>
+      <Router>
       <Preloader load={load} />
       <div className="App" id={load ? "no-scroll" : "scroll"}>
         <Navbar />
@@ -37,13 +43,15 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/project" element={<Projects />} />
+          <Route path="/project/:slug" element={<ProjectDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="/resume" element={<Resume />} />
           <Route path="*" element={<Navigate to="/"/>} />
         </Routes>
         <Footer />
       </div>
-    </Router>
+      </Router>
+    </LanguageProvider>
   );
 }
 

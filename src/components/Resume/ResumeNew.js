@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Container, Row } from "react-bootstrap";
-import Button from "react-bootstrap/Button";
+import React, { useState, useEffect, useRef } from "react";
 import Particle from "../Particle";
-import pdf from "../../Assets/../Assets/Meriam-Mhadhbi-FlowCV-Resume-20251015.pdf";
+import pdf from "../../Assets/Meriam-Mhadhbi-CV.pdf";
 import {
   AiOutlineDownload,
   AiOutlineLeft,
@@ -10,103 +8,121 @@ import {
 } from "react-icons/ai";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import { useT, useLang } from "../../i18n";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 function ResumeNew() {
-  const [width, setWidth] = useState(1200);
+  const t = useT();
+  const { dir } = useLang();
+  const frameRef = useRef(null);
+  const [pageWidth, setPageWidth] = useState(820);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
+
+  // Size the PDF to its CONTAINER, not to window.innerWidth. The old code used
+  // scale={1.7} on wide screens, which rendered a page wider than the viewport
+  // and pushed the whole section into horizontal overflow — which is why the
+  // background stopped partway across the page.
   useEffect(() => {
-    setWidth(window.innerWidth);
+    const measure = () => {
+      const available = frameRef.current
+        ? frameRef.current.clientWidth
+        : window.innerWidth;
+      setPageWidth(Math.max(280, Math.min(available - 32, 820)));
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
   }, []);
 
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
+  const onDocumentLoadSuccess = ({ numPages: n }) => {
+    setNumPages(n);
+    setPageNumber(1);
   };
 
-  const nextPage = () => {
-    if (pageNumber < (numPages ?? 1)) setPageNumber(pageNumber + 1);
-  };
+  const nextPage = () => setPageNumber((p) => Math.min(p + 1, numPages ?? 1));
+  const prevPage = () => setPageNumber((p) => Math.max(p - 1, 1));
 
-  const prevPage = () => {
-    if (pageNumber > 1) setPageNumber(pageNumber - 1);
-  };
+  const PrevIcon = dir === "rtl" ? AiOutlineRight : AiOutlineLeft;
+  const NextIcon = dir === "rtl" ? AiOutlineLeft : AiOutlineRight;
+
+  const downloadBtn = (
+    <a
+      className="rd-btn rd-btn--solid"
+      href={pdf}
+      target="_blank"
+      rel="noreferrer"
+    >
+      <AiOutlineDownload /> {t("resume.download")}
+    </a>
+  );
 
   return (
-    <div>
-      <Container fluid className="resume-section">
-        <Particle />
+    <div className="resume-section">
+      <Particle />
 
-        {/* Top Download Button */}
-        <Row style={{ justifyContent: "center", position: "relative" }}>
-          <Button
-            variant="primary"
-            href={pdf}
-            target="_blank"
-            style={{ maxWidth: "250px" }}
-          >
-            <AiOutlineDownload />
-            &nbsp;Download CV
-          </Button>
-        </Row>
+      <div className="rd-container">
+        <div className="rd-resume__head">
+          <p className="rd-eyebrow">{t("resume.eyebrow")}</p>
+          <h1 className="rd-title">{t("resume.title")}</h1>
+          <p className="rd-sub">{t("resume.sub")}</p>
+          <div className="rd-resume__actions">{downloadBtn}</div>
+        </div>
 
-        {/* PDF Viewer */}
-        <Row
-          className="resume justify-content-center"
-          style={{ position: "relative" }}
-        >
-          <Document file={pdf} onLoadSuccess={onDocumentLoadSuccess}>
-            <Page
-              pageNumber={pageNumber}
-              scale={width > 1230 ? 1.7 : width > 786 ? 1.2 : 0.6}
-              renderTextLayer={false}
-              renderAnnotationLayer={false}
-            />
-          </Document>
-
-          {/* Floating Navigation Buttons */}
-          <button
-            className="pdf-nav-btn left"
-            onClick={prevPage}
-            disabled={pageNumber <= 1}
-          >
-            <AiOutlineLeft />
-          </button>
-
-          <button
-            className="pdf-nav-btn right"
-            onClick={nextPage}
-            disabled={pageNumber >= (numPages ?? 1)}
-          >
-            <AiOutlineRight />
-          </button>
-
-          {/* Page Indicator */}
-          <div className="page-indicator">
-            Page {pageNumber} of {numPages}
+        <div className="rd-resume__frame" ref={frameRef}>
+          <div className="rd-resume__doc">
+            <Document
+              file={pdf}
+              onLoadSuccess={onDocumentLoadSuccess}
+              loading={<p className="rd-resume__loading">{t("resume.loading")}</p>}
+              error={
+                <p className="rd-resume__loading">{t("resume.error")}</p>
+              }
+            >
+              <Page
+                pageNumber={pageNumber}
+                width={pageWidth}
+                renderTextLayer={false}
+                renderAnnotationLayer={false}
+              />
+            </Document>
           </div>
-        </Row>
 
-        {/* Bottom Download Button */}
-        <Row
-          style={{
-            justifyContent: "center",
-            position: "relative",
-            marginTop: "30px",
-          }}
-        >
-          <Button
-            variant="primary"
-            href={pdf}
-            target="_blank"
-            style={{ maxWidth: "250px" }}
-          >
-            <AiOutlineDownload />
-            &nbsp;Download CV
-          </Button>
-        </Row>
-      </Container>
+          {numPages > 1 && (
+            <div className="rd-resume__pager">
+              <button
+                type="button"
+                className="pdf-nav-btn"
+                onClick={prevPage}
+                disabled={pageNumber <= 1}
+                aria-label={t("resume.prevPage")}
+              >
+                <PrevIcon />
+              </button>
+
+              <span className="page-indicator">
+                {t("resume.pageLabel")} {pageNumber} {t("resume.pageOf")}{" "}
+                {numPages}
+              </span>
+
+              <button
+                type="button"
+                className="pdf-nav-btn"
+                onClick={nextPage}
+                disabled={pageNumber >= numPages}
+                aria-label={t("resume.nextPage")}
+              >
+                <NextIcon />
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="rd-resume__actions rd-resume__actions--bottom">
+          {downloadBtn}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,31 +1,34 @@
 import React from "react";
-import Card from "react-bootstrap/Card";
-import { ImPointRight } from "react-icons/im";
+import { useT } from "../../i18n";
 
 function AboutCard() {
+  const t = useT();
+
   return (
-    <Card className="quote-card-view">
-      <Card.Body>
-        <blockquote className="blockquote mb-0">
-          <p style={{ textAlign: "justify" }}>
-            Hi Everyone, I am <span className="purple">Meriam Mhadhbi. </span>
-           
-            <br />
-            I’m a Front-End Web Developer with<span className="purple"> +3 years of hands-on experience</span>  building responsive, user-centric web applications.
-            <br />
-            I specialize in <span className="purple">modern JavaScript frameworks</span> such as React ,Next, and have a strong foundation in agile development methodologies.
+    <div
+      className="rd-card"
+      style={{ padding: "36px", borderRadius: 20, height: "auto" }}
+    >
+      <h2 className="rd-title">
+        {t("about.cardTitleA")}
+        <span className="purple">{t("about.cardTitleB")}</span>
+        {t("about.cardTitleC")}
+      </h2>
 
-            <br />
-            <br />
-            I'm passionate about creating clean, scalable code and delivering seamless user experiences across devices.
+      <p className="rd-sub">
+        {t("about.cardP1a")}
+        <span className="purple">{t("about.cardP1b")}</span>
+        {t("about.cardP1c")}
+      </p>
 
-</p>
-         
-
-         
-        </blockquote>
-      </Card.Body>
-    </Card>
+      <p className="rd-sub">
+        {t("about.cardP2a")}
+        <span className="purple">{t("about.cardP2b")}</span>
+        {t("about.cardP2c")}
+        <span className="purple">{t("about.cardP2d")}</span>
+        {t("about.cardP2e")}
+      </p>
+    </div>
   );
 }
 

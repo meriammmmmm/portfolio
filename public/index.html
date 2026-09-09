@@ -4,10 +4,10 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#ffffff" />
     <meta
       name="description"
-      content="Web site created using create-react-app"
+      content="Meriam Mhadhbi — front-end developer building responsive, user-centred web applications with React and Next.js."
     />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Meriam Mhadhbi | Portfolio</title>
@@ -51,6 +51,44 @@
       name="twitter:image"
       content="https://raw.githubusercontent.com/soumyajit4419/Portfolio/master/Images/readme-img.png?token=AK7VCIF5RYEUZZAURELPTAC76U6AK"
     />
+    <script>
+      // Resolve the theme before first paint so there is no flash.
+      // Light is the default; dark only when stored or the OS asks for it.
+      (function () {
+        var theme = "light";
+        try {
+          var stored = localStorage.getItem("theme");
+          if (stored === "light" || stored === "dark") {
+            theme = stored;
+          } else if (
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+          ) {
+            theme = "dark";
+          }
+        } catch (e) {}
+        document.documentElement.setAttribute("data-theme", theme);
+
+        // Same idea for the language: resolve it before paint so Arabic never
+        // renders left-to-right for a frame. Falls back to the browser's
+        // language, then English.
+        var lang = "en";
+        try {
+          var savedLang = localStorage.getItem("lang");
+          if (savedLang === "en" || savedLang === "fr" || savedLang === "ar") {
+            lang = savedLang;
+          } else {
+            var nav = (navigator.language || "").slice(0, 2).toLowerCase();
+            if (nav === "fr" || nav === "ar") lang = nav;
+          }
+        } catch (e) {}
+        document.documentElement.setAttribute("lang", lang);
+        document.documentElement.setAttribute(
+          "dir",
+          lang === "ar" ? "rtl" : "ltr"
+        );
+      })();
+    </script>
   </head>
 
   <body>

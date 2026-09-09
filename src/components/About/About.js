@@ -1,53 +1,82 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
 import Particle from "../Particle";
-import Github from "./Github";
 import Techstack from "./Techstack";
 import Aboutcard from "./AboutCard";
-import laptopImg from "../../Assets/about.png";
 import Toolstack from "./Toolstack";
+import { useT } from "../../i18n";
+
+// Straight from the CV — experience and education, in place of the old
+// decorative illustration. Keys only; the copy lives in src/i18n/ui.js.
+const TIMELINE = [
+  {
+    id: "job1",
+    period: "about.job1Period",
+    title: "about.job1Title",
+    org: "about.job1Org",
+    notes: ["about.job1Note1", "about.job1Note2", "about.job1Note3"],
+  },
+  {
+    id: "job2",
+    period: "about.job2Period",
+    title: "about.job2Title",
+    org: "about.job2Org",
+    notes: [],
+  },
+];
 
 function About() {
+  const t = useT();
+
   return (
-    <Container fluid className="about-section">
+    <div className="about-section">
       <Particle />
-      <Container>
-        <Row style={{ justifyContent: "center", padding: "10px" }}>
-          <Col
-            md={7}
-            style={{
-              justifyContent: "center",
-              paddingTop: "30px",
-              paddingBottom: "50px",
-            }}
-          >
-            <h1 style={{ fontSize: "2.1em", paddingBottom: "20px" }}>
-              Know Who <strong className="purple">I'M</strong>
-            </h1>
+
+      <div className="rd-container">
+        <div className="rd-hero">
+          <div>
+            <p className="rd-eyebrow">{t("about.eyebrow")}</p>
             <Aboutcard />
-          </Col>
-          <Col
-            md={5}
-            style={{ paddingTop: "120px", paddingBottom: "50px" }}
-            className="about-img"
-          >
-            <img src={laptopImg} alt="about" className="img-fluid" />
-          </Col>
-        </Row>
-        <h1 className="project-heading">
-          Professional <strong className="purple">Skillset </strong>
-        </h1>
+          </div>
 
-        <Techstack />
+          <div className="rd-hero__art">
+            <ol className="rd-timeline">
+              {TIMELINE.map((item) => (
+                <li className="rd-timeline__item" key={item.id}>
+                  <span className="rd-timeline__period">{t(item.period)}</span>
+                  <h3 className="rd-timeline__title">{t(item.title)}</h3>
+                  <p className="rd-timeline__org">{t(item.org)}</p>
+                  {item.notes.length > 0 && (
+                    <ul className="rd-timeline__notes">
+                      {item.notes.map((n) => (
+                        <li key={n}>{t(n)}</li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
 
-        <h1 className="project-heading">
-          <strong className="purple">Tools</strong> I use
-        </h1>
-        <Toolstack />
+        <section className="rd-section" style={{ textAlign: "center" }}>
+          <p className="rd-eyebrow">{t("about.skillsEyebrow")}</p>
+          <h2 className="rd-title">
+            {t("about.skillsTitleA")}
+            <span className="purple">{t("about.skillsTitleB")}</span>
+          </h2>
+          <Techstack />
+        </section>
 
-    
-      </Container>
-    </Container>
+        <section className="rd-section" style={{ textAlign: "center" }}>
+          <p className="rd-eyebrow">{t("about.toolsEyebrow")}</p>
+          <h2 className="rd-title">
+            <span className="purple">{t("about.toolsTitleA")}</span>
+            {t("about.toolsTitleB")}
+          </h2>
+          <Toolstack />
+        </section>
+      </div>
+    </div>
   );
 }
 
