@@ -34,7 +34,7 @@ function Projects() {
       <Particle />
 
       <div className="rd-container">
-        <div style={{ textAlign: "center", paddingTop: 40 }}>
+        <div data-reveal style={{ textAlign: "center", paddingTop: 40 }}>
           <p className="rd-eyebrow">{t("projects.eyebrow")}</p>
           <h1 className="rd-title">
             {t("projects.titleA")}

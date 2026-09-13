@@ -1574,3 +1574,62 @@ html, body { overflow-x: hidden; }
 
 /* The PDF pager arrows keep their physical positions — they mean
    "previous page" and "next page", which the icons already say. */
+
+/* ============================================================
+   Scroll reveal
+   The `reveal` class is added by src/components/ScrollReveal.js,
+   never in the markup — so with JS off nothing here applies and
+   the page stays fully visible. `is-visible` lands when the
+   element crosses the fold.
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  /* Ease-out curve: quick to start, settles softly — reads as the content
+     arriving rather than sliding. */
+  transition: opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: auto;
+}
+
+/* The hero's two halves come in from opposite sides instead of upward, so the
+   first thing you see isn't the same motion as everything below it. */
+.reveal.rd-hero__copy { transform: translateX(-22px); }
+.reveal.rd-hero__art  { transform: translateX(22px); }
+[dir="rtl"] .reveal.rd-hero__copy { transform: translateX(22px); }
+[dir="rtl"] .reveal.rd-hero__art  { transform: translateX(-22px); }
+.reveal.rd-hero__art.is-visible,
+.reveal.rd-hero__copy.is-visible { transform: none; }
+
+/* Cards lift and scale a touch — enough to feel like they surface. */
+.reveal.rd-card { transform: translateY(28px) scale(0.985); }
+.reveal.rd-card.is-visible { transform: none; }
+
+/* Gallery figures are already image-heavy; keep their motion smaller. */
+.reveal.rd-case__shots > figure,
+.rd-case__shots > figure.reveal { transform: translateY(16px); }
+
+
+/* List bullets and stack chips on a case study travel sideways a little
+   instead of upward — they read as a list filling in, not blocks landing. */
+.reveal.rd-tag { transform: translateY(10px) scale(0.96); }
+.reveal.rd-tag.is-visible { transform: none; }
+.rd-case__list > li.reveal { transform: translateX(-14px); }
+[dir="rtl"] .rd-case__list > li.reveal { transform: translateX(14px); }
+.rd-case__list > li.reveal.is-visible { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.is-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

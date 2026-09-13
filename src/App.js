@@ -14,6 +14,7 @@ import {
   Navigate
 } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
+import ScrollReveal from "./components/ScrollReveal";
 import { LanguageProvider } from "./i18n";
 // Bootstrap MUST come first: it ships a `body { color: var(--bs-body-color) }`
 // reboot rule that otherwise overrides our theme tokens and leaves dark-mode
@@ -40,6 +41,7 @@ function App() {
       <div className="App" id={load ? "no-scroll" : "scroll"}>
         <Navbar />
         <ScrollToTop />
+        <ScrollReveal />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/project" element={<Projects />} />
