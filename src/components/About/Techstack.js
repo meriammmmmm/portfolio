@@ -6,24 +6,24 @@ import {
   SiNextdotjs,
   SiRedux,
   SiTailwindcss,
-  SiSass,
-  SiMui,
   SiNodedotjs,
+  SiNestjs,
+  SiPostgresql,
   SiPython,
 } from "react-icons/si";
 
 // Mirrors the Technologies section of the CV — nothing here that the CV
 // doesn't back up.
 const STACK = [
-  { icon: <SiJavascript />, label: "JavaScript" },
   { icon: <SiTypescript />, label: "TypeScript" },
+  { icon: <SiJavascript />, label: "JavaScript" },
   { icon: <SiReact />, label: "React.js" },
   { icon: <SiNextdotjs />, label: "Next.js" },
   { icon: <SiRedux />, label: "Redux" },
   { icon: <SiTailwindcss />, label: "Tailwind CSS" },
-  { icon: <SiMui />, label: "MUI" },
-  { icon: <SiSass />, label: "Sass" },
   { icon: <SiNodedotjs />, label: "Node.js" },
+  { icon: <SiNestjs />, label: "NestJS" },
+  { icon: <SiPostgresql />, label: "PostgreSQL" },
   { icon: <SiPython />, label: "Python" },
 ];
 

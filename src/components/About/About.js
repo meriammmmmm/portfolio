@@ -13,13 +13,25 @@ const TIMELINE = [
     period: "about.job1Period",
     title: "about.job1Title",
     org: "about.job1Org",
-    notes: ["about.job1Note1", "about.job1Note2", "about.job1Note3"],
+    notes: [
+      "about.job1Note1",
+      "about.job1Note2",
+      "about.job1Note3",
+      "about.job1Note4",
+    ],
   },
   {
     id: "job2",
     period: "about.job2Period",
     title: "about.job2Title",
     org: "about.job2Org",
+    notes: ["about.job2Note1", "about.job2Note2"],
+  },
+  {
+    id: "job3",
+    period: "about.job3Period",
+    title: "about.job3Title",
+    org: "about.job3Org",
     notes: [],
   },
 ];

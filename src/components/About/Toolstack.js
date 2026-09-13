@@ -2,19 +2,24 @@ import React from "react";
 import {
   SiGit,
   SiGithub,
+  SiGithubactions,
   SiDocker,
   SiStrapi,
   SiSocketdotio,
+  SiTurborepo,
   SiReact,
 } from "react-icons/si";
 
-// "Backend Tools" from the CV, plus React Native which it lists under Frontend.
+// Tooling + backend/data entries from the CV, plus React Native (listed under
+// Frontend there).
 const TOOLS = [
   { icon: <SiGit />, label: "Git" },
   { icon: <SiGithub />, label: "GitHub" },
+  { icon: <SiGithubactions />, label: "CI/CD" },
   { icon: <SiDocker />, label: "Docker" },
+  { icon: <SiTurborepo />, label: "Monorepo tooling" },
   { icon: <SiStrapi />, label: "Strapi" },
-  { icon: <SiSocketdotio />, label: "WebSocket" },
+  { icon: <SiSocketdotio />, label: "WebSockets" },
   { icon: <SiReact />, label: "React Native" },
 ];
 
