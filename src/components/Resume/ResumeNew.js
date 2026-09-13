@@ -75,7 +75,10 @@ function ResumeNew() {
             <Document
               file={pdf}
               onLoadSuccess={onDocumentLoadSuccess}
-              loading={<p className="rd-resume__loading">{t("resume.loading")}</p>}
+              // No loading placeholder — the frame stays empty until the page
+              // is painted, instead of flashing a "Loading…" line.
+              loading={null}
+              noData={null}
               error={
                 <p className="rd-resume__loading">{t("resume.error")}</p>
               }
@@ -85,6 +88,8 @@ function ResumeNew() {
                 width={pageWidth}
                 renderTextLayer={false}
                 renderAnnotationLayer={false}
+                loading={null}
+                noData={null}
               />
             </Document>
           </div>
