@@ -102,7 +102,22 @@ function ScrollReveal() {
     const settled = new WeakSet();
 
     const prepare = (el, delayMs) => {
-      if (el.dataset.revealReady) return;
+      if (el.dataset.revealReady) {
+        // Adopt orphans. On a route change React commits the new page before
+        // it flushes effects, so the OUTGOING effect's mutation watcher can
+        // prepare the new page's elements — hiding them and adding them to a
+        // pending set that its own cleanup then throws away. This effect would
+        // otherwise skip them here as "already handled" and nothing would ever
+        // reveal them: a hidden element with no owner is a blank page. If it
+        // is hidden and unclaimed, claim it.
+        if (
+          el.classList.contains("reveal") &&
+          !el.classList.contains("is-visible")
+        ) {
+          pending.add(el);
+        }
+        return;
+      }
       el.dataset.revealReady = "1";
       if (delayMs) el.style.setProperty("--reveal-delay", `${delayMs}ms`);
       el.classList.add("reveal");
