@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { CgWebsite } from "react-icons/cg";
 import { AiOutlineArrowRight } from "react-icons/ai";
+import Tilt3D from "../Tilt3D";
 import { useT } from "../../i18n";
 
 function ProjectCards({
@@ -16,7 +17,8 @@ function ProjectCards({
   const t = useT();
 
   return (
-    <article className="rd-card">
+    <Tilt3D className="rd-card-tilt tilt3d--glare" max={7} scale={1.015}>
+      <article className="rd-card">
       <Link className="rd-card__media" to={`/project/${slug}`} tabIndex={-1} aria-hidden="true">
         {imgPath ? (
           <img
@@ -65,7 +67,8 @@ function ProjectCards({
           )}
         </div>
       </div>
-    </article>
+      </article>
+    </Tilt3D>
   );
 }
 

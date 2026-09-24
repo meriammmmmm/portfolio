@@ -1,5 +1,6 @@
 import React from "react";
 import me from "../../Assets/meriam.png";
+import Tilt3D from "../Tilt3D";
 import { useT } from "../../i18n";
 
 /**
@@ -11,7 +12,8 @@ function Portrait() {
   const t = useT();
 
   return (
-    <div className="rd-portrait" aria-hidden="false">
+    <Tilt3D className="rd-portrait-tilt" max={10} scale={1}>
+      <div className="rd-portrait" aria-hidden="false">
       <span className="rd-portrait__ring rd-portrait__ring--outer" aria-hidden="true" />
       <span className="rd-portrait__ring rd-portrait__ring--inner" aria-hidden="true" />
 
@@ -48,7 +50,8 @@ function Portrait() {
           </code>
         </pre>
       </div>
-    </div>
+      </div>
+    </Tilt3D>
   );
 }
 

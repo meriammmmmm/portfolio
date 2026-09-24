@@ -392,9 +392,13 @@ a:hover { color: var(--accent-hover); }
   border: 1px solid transparent;
   cursor: pointer;
   transition: background-color 0.2s ease, border-color 0.2s ease,
-    color 0.2s ease, box-shadow 0.2s ease;
+    color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 .rd-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* 3D press: buttons lift on hover and sink on click. */
+.rd-btn:hover { transform: translateY(-2px); }
+.rd-btn:active { transform: translateY(1px) scale(0.98); transition-duration: 0.06s; }
+.rd-btn--solid:hover { box-shadow: var(--shadow-md); }
 
 .rd-btn--solid {
   background-color: var(--accent);
@@ -560,6 +564,7 @@ a:hover { color: var(--accent-hover); }
   margin-top: var(--sp-8);
   padding: 0;
   list-style: none;
+  perspective: 800px;
 }
 .rd-tile {
   display: flex;
@@ -572,9 +577,14 @@ a:hover { color: var(--accent-hover); }
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background-color: var(--bg-surface);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.25s ease;
 }
-.rd-tile:hover { border-color: var(--border-strong); box-shadow: var(--shadow-sm); }
+.rd-tile:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-5px) rotateX(9deg);
+  transform-origin: center bottom;
+}
 .rd-tile svg { font-size: 1.9rem; color: var(--text-secondary); }
 .rd-tile span {
   font-size: var(--fs-caption);
@@ -720,6 +730,7 @@ a:hover { color: var(--accent-hover); }
 /* The old "Find me on" band was a transparent full-width strip, so it read
    as an empty white gap between two tinted sections. Contained instead. */
 .rd-cta {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -733,6 +744,68 @@ a:hover { color: var(--accent-hover); }
 .rd-cta__btn { margin-top: var(--sp-6); }
 .rd-cta__socials { margin-top: var(--sp-6); justify-content: center; }
 .rd-cta__socials a { background-color: var(--bg-surface); }
+
+/* ==================================================================== */
+/*  3D motion engine (CSS transforms — no WebGL)                        */
+/*  Tilt3D.js publishes --tilt-x/--tilt-y/--mx/--my as the pointer      */
+/*  moves; everything here turns those numbers into depth: the element  */
+/*  rotates in perspective, a glare sweeps across it, and children      */
+/*  tagged .depth-* sit at different translateZ planes (real parallax). */
+/* ==================================================================== */
+.tilt3d {
+  --tilt-x: 0;
+  --tilt-y: 0;
+  --tilt-max: 9deg;
+  --tilt-scale: 1.02;
+  transform: perspective(1000px)
+    rotateX(calc(var(--tilt-y) * var(--tilt-max) * -2))
+    rotateY(calc(var(--tilt-x) * var(--tilt-max) * 2));
+  transform-style: preserve-3d;
+  transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+.tilt3d:hover {
+  transform: perspective(1000px)
+    rotateX(calc(var(--tilt-y) * var(--tilt-max) * -2))
+    rotateY(calc(var(--tilt-x) * var(--tilt-max) * 2))
+    scale(var(--tilt-scale));
+  transition-duration: 0.08s;
+}
+
+/* Glare that follows the cursor. Only enabled on wrappers that opt in
+   (.tilt3d--glare) so the hero art stays glare-free. */
+.tilt3d--glare { position: relative; }
+.tilt3d--glare::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  background: radial-gradient(
+    480px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.16),
+    transparent 42%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.tilt3d--glare:hover::after { opacity: 1; }
+
+/* Project-card tilt: the wrapper becomes the grid item, the card fills it. */
+.rd-grid > .tilt3d { display: flex; }
+.rd-grid > .tilt3d > .rd-card { flex: 1; }
+.rd-card-tilt { --tilt-max: 7deg; --tilt-scale: 1.015; border-radius: var(--radius-lg); }
+
+/* Depth planes for anything inside a tilt wrapper. */
+.depth-1 { transform: translateZ(20px); }
+.depth-2 { transform: translateZ(40px); }
+.depth-3 { transform: translateZ(60px); }
+
+/* The tilt wrapper is now the flex item in the hero art column, so it must
+   carry the sizing .rd-portrait used to have — a shrink-wrapped flex item
+   would collapse the portrait (width:100% of nothing) to zero. */
+.rd-portrait-tilt { width: 100%; max-width: 480px; }
 
 /* hero copy stays left-aligned even though page shells no longer centre */
 .rd-hero__copy { text-align: left; }
@@ -911,6 +984,9 @@ html, body { overflow-x: hidden; }
   margin-inline: auto;
   aspect-ratio: 1 / 1;
   isolation: isolate;
+  /* Pass the tilt wrapper's 3D context through, so every floating piece
+     below can sit on its own translateZ plane. */
+  transform-style: preserve-3d;
 }
 
 /* --- orbit rings --- */
@@ -944,7 +1020,7 @@ html, body { overflow-x: hidden; }
   position: absolute;
   left: 50%;
   top: 44%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) translateZ(24px);
   width: 68%;
   height: 68%;
   border-radius: 50%;
@@ -993,9 +1069,11 @@ html, body { overflow-x: hidden; }
 }
 .rd-chip--tl { top: 9%; left: 0; animation: rd-float 7s ease-in-out infinite; }
 .rd-chip--br { bottom: 22%; right: 0; animation: rd-float 9s ease-in-out infinite reverse; }
+/* translateZ is baked into the keyframes: the animation owns `transform`,
+   so the chips keep their depth plane while bobbing. */
 @keyframes rd-float {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-9px); }
+  0%, 100% { transform: translateZ(60px) translateY(0); }
+  50%      { transform: translateZ(60px) translateY(-9px); }
 }
 
 /* --- availability pill --- */
@@ -1016,6 +1094,7 @@ html, body { overflow-x: hidden; }
   font-weight: 500;
   color: var(--text-primary);
   white-space: nowrap;
+  transform: translateZ(45px);
 }
 .rd-status i {
   width: 9px;
@@ -1043,6 +1122,7 @@ html, body { overflow-x: hidden; }
   background-color: var(--bg-surface);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-md);
+  transform: translateZ(36px);
 }
 .rd-codecard__bar {
   display: flex;
@@ -1584,7 +1664,8 @@ html, body { overflow-x: hidden; }
    ============================================================ */
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
+  transform: perspective(900px) translateY(24px) rotateX(6deg);
+  transform-origin: 50% 0;
   will-change: opacity, transform;
   /* LAST RESORT. If the script throws, is blocked, or never gets to this
      element, the page would sit empty forever — a blank page is far worse
@@ -1609,18 +1690,70 @@ html, body { overflow-x: hidden; }
   will-change: auto;
 }
 
-/* The hero's two halves come in from opposite sides instead of upward, so the
+/* The hero's two halves swing in from opposite sides instead of upward, so the
    first thing you see isn't the same motion as everything below it. */
-.reveal.rd-hero__copy { transform: translateX(-22px); }
-.reveal.rd-hero__art  { transform: translateX(22px); }
-[dir="rtl"] .reveal.rd-hero__copy { transform: translateX(22px); }
-[dir="rtl"] .reveal.rd-hero__art  { transform: translateX(-22px); }
+.reveal.rd-hero__copy { transform: perspective(900px) translateX(-22px) rotateY(7deg); }
+.reveal.rd-hero__art  { transform: perspective(900px) translateX(22px) rotateY(-7deg); }
+[dir="rtl"] .reveal.rd-hero__copy { transform: perspective(900px) translateX(22px) rotateY(-7deg); }
+[dir="rtl"] .reveal.rd-hero__art  { transform: perspective(900px) translateX(-22px) rotateY(7deg); }
 .reveal.rd-hero__art.is-visible,
 .reveal.rd-hero__copy.is-visible { transform: none; }
 
-/* Cards lift and scale a touch — enough to feel like they surface. */
-.reveal.rd-card { transform: translateY(28px) scale(0.985); }
+/* Cards surface out of the page: they start tilted back and sit up as
+   they enter. */
+.reveal.rd-card { transform: perspective(900px) translateY(28px) rotateX(8deg) scale(0.985); }
 .reveal.rd-card.is-visible { transform: none; }
+
+/* Section headings choreograph themselves: the eyebrow slides in from the
+   side, the title un-masks behind a clip, each paragraph fades up. The
+   ScrollReveal engine's per-parent stagger (--reveal-delay) does the
+   sequencing: eyebrow → title → sub → sub. */
+.reveal.rd-eyebrow { transform: translateX(-16px); }
+.reveal.rd-title {
+  clip-path: inset(0 0 100% 0);
+  transform: translateY(14px);
+}
+.reveal.rd-title.is-visible {
+  clip-path: inset(0 0 0 0);
+  transition: opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+              clip-path 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.rd-sub { transform: translateY(16px); }
+
+/* Timeline entries alternate: odd ones slide in from the left, even ones
+   from the right, so the column reads as woven rather than stacked. */
+.reveal.rd-timeline__item { transform: translateX(-28px); }
+.reveal.rd-timeline__item:nth-child(even) { transform: translateX(28px); }
+[dir="rtl"] .reveal.rd-timeline__item { transform: translateX(28px); }
+[dir="rtl"] .reveal.rd-timeline__item:nth-child(even) { transform: translateX(-28px); }
+.reveal.rd-timeline__item.is-visible { transform: none; }
+
+/* Skill tiles pop up from below with a little 3D tumble. */
+.reveal.rd-tile { transform: translateY(18px) scale(0.9) rotateX(12deg); }
+.reveal.rd-tile.is-visible { transform: none; }
+
+/* The footer drifts up gently — it's the last thing on the page. */
+.reveal.rd-footer { transform: translateY(18px); }
+
+/* Scroll progress: a 3px accent hairline across the very top of the
+   viewport that fills as the reader descends. */
+.rd-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 2000;
+  pointer-events: none;
+}
+.rd-progress__bar {
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+}
 
 /* Gallery figures are already image-heavy; keep their motion smaller. */
 .reveal.rd-case__shots > figure,
@@ -1642,4 +1775,12 @@ html, body { overflow-x: hidden; }
     transform: none !important;
     transition: none !important;
   }
+  /* Flat and calm for anyone who asks for less motion: no tilt, no glare,
+     no lift/press on buttons and tiles. */
+  .tilt3d,
+  .tilt3d:hover { transform: none !important; transition: none !important; }
+  .tilt3d--glare::after { display: none; }
+  .rd-btn, .rd-btn:hover, .rd-btn:active { transform: none; }
+  .rd-tile:hover { transform: none; }
+  .rd-chip { animation: none !important; }
 }

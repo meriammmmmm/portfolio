@@ -23,13 +23,20 @@ import { useLocation } from "react-router-dom";
 
 // Elements revealed one after another inside their own container.
 const GROUPS = [
-  ".rd-grid > .rd-card",
+  // Project cards sit inside their Tilt3D wrapper (`.tilt3d`), so both
+  // shapes are matched — wrapped cards on the projects grid, bare cards
+  // anywhere the tilt wrapper isn't used.
+  ".rd-grid > .tilt3d > .rd-card, .rd-grid > .rd-card",
   ".rd-case__shots > figure",
   ".rd-tiles > .rd-tile",
   ".rd-timeline > .rd-timeline__item",
   ".rd-facts > .rd-facts__row",
   ".rd-case__list > li",
   ".rd-case__stack .rd-card__tags > .rd-tag",
+  // Section headings choreograph themselves: eyebrow lands first, then the
+  // title un-masks, then each paragraph. One selector keeps them in DOM
+  // order so the engine's per-parent stagger does the sequencing.
+  ".rd-eyebrow, .rd-title, .rd-sub",
 ];
 
 // Elements revealed on their own.
@@ -47,6 +54,7 @@ const SINGLES = [
   ".rd-cta",
   ".rd-resume__head",
   ".rd-resume__frame",
+  ".rd-footer",
   "[data-reveal]",
 ];
 
